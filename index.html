@@ -1,0 +1,88 @@
+<html>
+  <head>
+
+    <style>
+      html, body, #map {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <script>
+      var map;
+      function initMap() {
+        var bairroBarraFunda = new google.maps.LatLng(-23.536171, -46.6557213);
+        var bairroPerdizes = new google.maps.LatLng(-23.5318468,-46.6769615);
+
+        // var bairro = bairroBarraFunda;
+        var bairro = bairroPerdizes;
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: bairro,
+          zoom: 16
+        });
+
+        search(map, bairro, 'hospital', 'icons/icon-hospital.png');
+        search(map, bairro, 'pronto socorro', 'icons/icon-hospital.png');
+        search(map, bairro, 'banco', 'icons/icon-bank.png');
+        search(map, bairro, 'supermercado', 'icons/icon-mercado.png');
+        search(map, bairro, 'mercado', 'icons/icon-mercado.png');
+        search(map, bairro, 'sacolão', 'icons/icon-mercado.png');
+        search(map, bairro, 'cafeteria', 'icons/icon-coffee.png');
+        search(map, bairro, 'padaria', 'icons/icon-restaurant.png');
+        search(map, bairro, 'escola', 'icons/icon-escola.png');
+        search(map, bairro, 'faculdade', 'icons/icon-escola.png');
+        search(map, bairro, 'rua turiassu 1128', 'icons/icon-star.png');
+        search(map, bairro, 'rua lopes de oliveira 691', 'icons/icon-star.png');
+
+        setTimeout(function(){
+          search(map, bairro, 'cacau show', 'icons/icon-cacaushow.png');
+          search(map, bairro, 'chocolates brasil cacau', 'icons/icon-brasilcacau.png');
+        }, 2000);
+      }
+
+function search(map, bairro, term, icon){
+  var request = {
+    location: bairro,
+    radius: 500,
+    keyword: term
+  };
+  infowindow = new google.maps.InfoWindow();
+  var service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(request, function(results, status){
+    callback(results, status, icon);
+  });
+}
+
+function callback(results, status, icon) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      createMarker(results[i], icon);
+    }
+  } else {
+    console.error("Places request failed: "+status);
+  }
+}
+
+function createMarker(place, icon) {
+  var placeLoc = place.geometry.location;
+  var marker = new google.maps.Marker({
+    icon: icon,
+    map: map,
+    position: place.geometry.location
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(place.name);
+    infowindow.open(map, this);
+  });
+}
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDtQWB28gr9Kgs9-EGoLk7zDRvJsaoIqGY&libraries=places&callback=initMap"
+    async defer></script>
+  </body>
+</html>
